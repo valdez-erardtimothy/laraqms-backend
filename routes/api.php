@@ -21,3 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [AuthController::class, 'authenticate']);
+
+// routes for authenticated
+Route::middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/get-authenticated', [AuthController::class, 'authenticated']);
+    });

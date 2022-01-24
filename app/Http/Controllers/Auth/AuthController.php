@@ -34,4 +34,16 @@ class AuthController extends Controller
         $body = ['message' => 'Incorrect username or password'];
         return response()->json($body, 401);
     }
+
+    /**
+     *  return the authenticated user.
+     *
+     *  should be protected by auth middleware on routes file.
+     */
+    public function authenticated()
+    {
+        $user = Auth::guard('sanctum')->user();
+
+        return response()->json(['user' => $user], 200);
+    }
 }
