@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CustomerQueueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +30,5 @@ Route::middleware('auth:sanctum')
 
         Route::get('/logout', [AuthController::class, 'logout']);
     });
+
+Route::post('/enqueue', [CustomerQueueController::class, 'enqueue']);
