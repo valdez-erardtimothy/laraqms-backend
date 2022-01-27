@@ -34,7 +34,6 @@ class WaitingCustomer extends Model
         if (is_null($date)) {
             $date = now();
         }
-
         $query->whereDate('created_at', $date);
     }
 
@@ -49,8 +48,8 @@ class WaitingCustomer extends Model
         return $this->id - $last_yesterday;
     }
 
-    /* static queries */
 
+    /* static queries */
 
     /**
      * @return WaitingCustomer get the last customer to queue yesterday.
@@ -80,5 +79,10 @@ class WaitingCustomer extends Model
         }
         $first_customer = static::createdAt($queued_at)?->id ?? 1;
         return static::where('id', $queue_number + 1 - $first_customer)->firstOrFail();
+    }
+
+    public static function getWaitList()
+    {
+        return static::where('status', 'WAITING')->get();
     }
 }

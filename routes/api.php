@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CustomerQueueController;
+use App\Http\Controllers\Teller\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +28,9 @@ Route::post('/login', [AuthController::class, 'authenticate']);
 Route::middleware('auth:sanctum')
     ->group(function () {
         Route::get('/get-authenticated', [AuthController::class, 'authenticated']);
-
+        Route::prefix('/teller')->group(function () {
+            Route::get('/dashboard', DashboardController::class);
+        });
         Route::get('/logout', [AuthController::class, 'logout']);
     });
 
