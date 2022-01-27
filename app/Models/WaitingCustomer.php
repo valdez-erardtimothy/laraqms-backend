@@ -48,10 +48,23 @@ class WaitingCustomer extends Model
         return $this->id - $last_yesterday;
     }
 
+    /**
+     * @return WaitingCustomer get the last customer to queue yesterday.
+     */
     public static function getLastYesterday(): ?WaitingCustomer
     {
         return static::upToYesterday()
-            ->orderBydesc('created_at')
+            ->orderByDesc('created_at')
+            ->first();
+    }
+
+    /**
+     * @return WaitingCustomer get the first customer to queue today.
+     */
+    public static function getFirstToday()
+    {
+        return static::createdToday()
+            ->orderByAsc('created_at')
             ->first();
     }
 }
