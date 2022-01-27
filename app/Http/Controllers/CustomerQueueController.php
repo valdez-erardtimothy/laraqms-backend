@@ -22,4 +22,14 @@ class CustomerQueueController extends Controller
             'customer' => $queued
         ]);
     }
+
+    /**
+     * @param Illuminate\Http\Request $request
+     * to pull the queue_token from cookies
+     */
+    public function getQueueNumber(Request $request)
+    {
+        $queue_token = $request->cookie('queue_token');
+        $this->queue_service->loadFromToken($queue_token);
+    }
 }

@@ -13,17 +13,23 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $email
  * @property int $queue_number
  * @property string $status
+ * @property string $queue_token
  */
 class WaitingCustomer extends Model
 {
     use HasFactory;
     protected $fillable = [
         'customer_name',
-        'email'
+        'email',
+        'queue_token'
     ];
 
     protected $appends = [
         'queue_number'
+    ];
+
+    protected $hidden = [
+        'queue_token'
     ];
 
     /* query scopes  */
@@ -81,8 +87,17 @@ class WaitingCustomer extends Model
         return static::where('id', $queue_number + 1 - $first_customer)->firstOrFail();
     }
 
+    /**
+     * @return WaitingCustomer[] collection of waiting queuers
+     */
     public static function getWaitList()
     {
-        return static::where('status', 'WAITING')->get();
+        return static::where('status', 'WAITING')
+            ->orderByDesc('created_at')->get();
+    }
+
+    public static function findByToken($token): WaitingCustomer
+    {
+        return static::where('queue_token', $token)->first();
     }
 }

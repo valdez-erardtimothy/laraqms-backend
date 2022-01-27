@@ -21,7 +21,8 @@ class CreateWaitingCustomersTable extends Migration
                 $table->string('customer_name');
                 $table->string('email');
                 $table->enum('status', $status_states)->default('WAITING');
-                $table->string('queue_token');
+                $table->string('queue_token', 16);
+                $table->timestamp('served_at')->nullable();
                 $table->timestamps();
             }
         );
