@@ -30,6 +30,8 @@ class CustomerQueueController extends Controller
     public function getQueueNumber(Request $request)
     {
         $queue_token = $request->cookie('queue_token');
-        $this->queue_service->loadFromToken($queue_token);
+        $queuer = $this->queue_service->loadFromToken($queue_token);
+
+        return response()->json(['customer' => $queuer]);
     }
 }

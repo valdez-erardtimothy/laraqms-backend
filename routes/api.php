@@ -37,3 +37,8 @@ Route::middleware('auth:sanctum')
 
 Route::middleware('unqueued')
     ->post('/enqueue', [CustomerQueueController::class, 'enqueue']);
+
+Route::get(
+    '/get-queue-slot',
+    [CustomerQueueController::class, 'getQueueNumber']
+);
