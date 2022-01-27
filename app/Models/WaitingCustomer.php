@@ -21,29 +21,38 @@ class WaitingCustomer extends Model
         'email'
     ];
 
+    protected $appends = [
+        'queue_number'
+    ];
+
+    /* query scopes  */
+
     public function scopeCreatedToday($query)
     {
         $query->whereRaw('DATE(created_at) LIKE CURDATE()');
     }
 
-    protected static function boot()
+    public function scopeUpToYesterday($query)
     {
-        parent::boot();
-        static::creating(function ($customer) {
-            // append a queue_number before saving
-            // (as it is not fillable)
-            $last_queuer = static::lastQueueNumber();
-            $customer->queue_number = $last_queuer + 1;
-        });
+        $query->whereDate('created_at', "<", date('Y-m-d'));
     }
 
-    /* static queries */
-    public static function lastQueueNumber()
+    /* accessor methods */
+
+    /**
+     * a human-readable queue number for ease of customers
+     */
+    public function getQueueNumberAttribute()
     {
-        $number = static::createdToday()
-            ->orderByDesc('created_at')
-            ->first('queue_number')
-            ->queue_number ?? 0;
-        return $number;
+        $last_yesterday = static::getLastYesterday();
+        $last_yesterday = $last_yesterday ? $last_yesterday->id : 0;
+        return $this->id - $last_yesterday;
+    }
+
+    public static function getLastYesterday(): ?WaitingCustomer
+    {
+        return static::upToYesterday()
+            ->orderBydesc('created_at')
+            ->first();
     }
 }

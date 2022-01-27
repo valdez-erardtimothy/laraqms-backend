@@ -20,7 +20,6 @@ class CreateWaitingCustomersTable extends Migration
                 $table->id();
                 $table->string('customer_name');
                 $table->string('email');
-                $table->unsignedInteger('queue_number');
                 $table->enum('status', $status_states)->default('WAITING');
                 $table->timestamps();
             }
