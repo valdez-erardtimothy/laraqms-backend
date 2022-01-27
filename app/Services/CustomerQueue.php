@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\EnqueueRequest;
 use App\Models\WaitingCustomer;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  *
@@ -17,7 +17,16 @@ class CustomerQueue
      */
     public function enqueue(EnqueueRequest $request): WaitingCustomer
     {
-        $customer = WaitingCustomer::create($request->all());
+        $fields = array_merge(
+            $request->all(),
+            ['queue_token' => static::generateToken()]
+        );
+        $customer = WaitingCustomer::create($fields);
         return $customer;
+    }
+
+    protected static function generateToken()
+    {
+        return Str::random();
     }
 }
