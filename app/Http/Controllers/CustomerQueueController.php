@@ -17,6 +17,9 @@ class CustomerQueueController extends Controller
 
     public function enqueue(EnqueueRequest $request)
     {
-        $this->queue_service->enqueue($request);
+        $queued = $this->queue_service->enqueue($request);
+        return response()->json([
+            'customer' => $queued
+        ]);
     }
 }
