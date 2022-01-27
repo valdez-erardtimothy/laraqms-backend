@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,14 +28,14 @@ class WaitingCustomer extends Model
 
     /* query scopes  */
 
-    public function scopeCreatedToday($query)
-    {
-        $query->whereRaw('DATE(created_at) LIKE CURDATE()');
-    }
 
-    public function scopeUpToYesterday($query)
+    public function scopeCreatedAt($query, DateTimeInterface|string $date = null)
     {
-        $query->whereDate('created_at', "<", date('Y-m-d'));
+        if (is_null($date)) {
+            $date = now();
+        }
+
+        $query->whereDate('created_at', $date);
     }
 
     /* accessor methods */
@@ -48,23 +49,36 @@ class WaitingCustomer extends Model
         return $this->id - $last_yesterday;
     }
 
+    /* static queries */
+
+
     /**
      * @return WaitingCustomer get the last customer to queue yesterday.
      */
     public static function getLastYesterday(): ?WaitingCustomer
     {
-        return static::upToYesterday()
+        return static::createdAt(now()->subDay(1))
             ->orderByDesc('created_at')
             ->first();
     }
 
-    /**
-     * @return WaitingCustomer get the first customer to queue today.
-     */
-    public static function getFirstToday()
+    public static function getFirstToday(): WaitingCustomer
     {
-        return static::createdToday()
-            ->orderByAsc('created_at')
-            ->first();
+        return static::createdAt(now())->orderByAsc('created_at')->first();
+    }
+
+    /**
+     * @param DateTimeInterface|string $queued_at will default to today if null
+     */
+    public function findByQueueNumber(
+        int $queue_number,
+        DateTimeInterface|string $queued_at = null
+    ): WaitingCustomer {
+        // default $queued_at to today
+        if (is_null($queued_at)) {
+            $queued_at = now();
+        }
+        $first_customer = static::createdAt($queued_at)?->id ?? 1;
+        return static::where('id', $queue_number + 1 - $first_customer);
     }
 }
