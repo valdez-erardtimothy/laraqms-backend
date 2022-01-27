@@ -34,4 +34,6 @@ Route::middleware('auth:sanctum')
         Route::get('/logout', [AuthController::class, 'logout']);
     });
 
-Route::post('/enqueue', [CustomerQueueController::class, 'enqueue']);
+
+Route::middleware('unqueued')
+    ->post('/enqueue', [CustomerQueueController::class, 'enqueue']);
