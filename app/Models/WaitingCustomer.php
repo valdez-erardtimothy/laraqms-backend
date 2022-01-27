@@ -79,6 +79,6 @@ class WaitingCustomer extends Model
             $queued_at = now();
         }
         $first_customer = static::createdAt($queued_at)?->id ?? 1;
-        return static::where('id', $queue_number + 1 - $first_customer);
+        return static::where('id', $queue_number + 1 - $first_customer)->firstOrFail();
     }
 }
