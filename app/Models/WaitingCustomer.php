@@ -70,7 +70,7 @@ class WaitingCustomer extends Model
     /**
      * @param DateTimeInterface|string $queued_at will default to today if null
      */
-    public function findByQueueNumber(
+    public static function findByQueueNumber(
         int $queue_number,
         DateTimeInterface|string $queued_at = null
     ): WaitingCustomer {
