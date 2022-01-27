@@ -44,8 +44,7 @@ class WaitingCustomer extends Model
      */
     public function getQueueNumberAttribute()
     {
-        $last_yesterday = static::getLastYesterday();
-        $last_yesterday = $last_yesterday ? $last_yesterday->id : 0;
+        $last_yesterday = static::getLastYesterday()?->id ?? 0;
         return $this->id - $last_yesterday;
     }
 
